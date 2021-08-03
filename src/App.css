@@ -1,10 +1,25 @@
-.App {
-  padding: 30px;
-  display: flex;
+/*.App {*/
+/*  padding: 30px;*/
+/*  display: flex;*/
+/*}*/
+
+/*.App > div {*/
+/*  margin-right: 50px;*/
+/*}*/
+
+.AddItemFormStyle{
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
-.App > div {
-  margin-right: 50px;
+.news{
+  display: flex;
+  align-items: center;
+}
+
+.login{
+  display: flex;
+  justify-content: space-between;
 }
 
 .error {
