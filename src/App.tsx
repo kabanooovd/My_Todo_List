@@ -43,10 +43,10 @@ function App() {
     const addTodolist = (title: string) => {
         dispatch(addTodoListAC(title))
     }
-    const updateTask = (title: string, id: string, todolistId: string) => {
-        dispatch(editTaskTitleAC(todolistId, id, title))
+    const updateTask = (title: string, taskId: string, todolistId: string) => {
+        dispatch(editTaskTitleAC(todolistId, taskId, title))
     }
-    const updateTodolist = (title: string, id: string, todolistId: string) => {
+    const updateTodolist = (title: string, todolistId: string) => {
         dispatch(editTodoListAC(todolistId, title))
     }
 
@@ -54,7 +54,7 @@ function App() {
 
         <div className="App">
 
-            <AddItemForm addTask={addTodolist} />
+            <AddItemForm addText={addTodolist} />
 
             {
                 todoLists.map(tl => {
@@ -66,7 +66,7 @@ function App() {
 
                     return <Todolist
                         key={tl.id}
-                        id={tl.id}
+                        todoListID={tl.id}
                         title={tl.title}
                         tasks={tasksForTodolist}
                         removeTask={removeTask}

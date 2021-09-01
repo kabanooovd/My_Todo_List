@@ -2,7 +2,7 @@ import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
 export type AddItemFormType = {
 
-    addTask: (title: string) => void
+    addText: (title: string) => void
 }
 
 export function AddItemForm(props: AddItemFormType) {
@@ -13,7 +13,7 @@ export function AddItemForm(props: AddItemFormType) {
     const addTask = () => {
         let newTitle = title.trim();
         if (newTitle !== "") {
-            props.addTask(newTitle);
+            props.addText(newTitle);
             setTitle("");
         } else {
             setError("Title is required");
