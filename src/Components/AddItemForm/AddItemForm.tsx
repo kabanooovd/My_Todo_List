@@ -1,32 +1,34 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useCallback, useState} from "react";
+import s from './AddItemForm.module.css'
 
 export type AddItemFormType = {
-
     addText: (title: string) => void
 }
 
-export function AddItemForm(props: AddItemFormType) {
+export const AddItemForm = React.memo(function (props: AddItemFormType) {
+
+    const {addText} = props
 
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
 
-    const addTask = () => {
+    const addTask = useCallback(() => {
         let newTitle = title.trim();
         if (newTitle !== "") {
-            props.addText(newTitle);
+            addText(newTitle);
             setTitle("");
         } else {
-            setError("Title is required");
+            setError("Insert TEXT");
             setTitle("");
         }
-    }
+    }, [addText, title])
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
+        error !== null && setError(null);
         if (e.key === 'Enter') {
             addTask();
         }
@@ -37,13 +39,13 @@ export function AddItemForm(props: AddItemFormType) {
             <input value={title}
                    onChange={onChangeHandler}
                    onKeyPress={onKeyPressHandler}
-                   className={error ? "error" : ""}
+                   className={error ? `${s.error}` : `${s.notError}`}
             />
             <button onClick={addTask}>+</button>
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className={`${s.errorMessage}`}>{error}</div>}
         </div>
     )
-}
+})
 
 
 

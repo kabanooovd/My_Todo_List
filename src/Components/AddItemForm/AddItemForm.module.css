@@ -1,0 +1,17 @@
+.error {
+    color: snow;
+    outline: none;
+    border: 2px solid red;
+    background-color: transparent;
+}
+
+.notError {
+    color: snow;
+    outline: none;
+    border: 2px solid snow;
+    background-color: transparent;
+}
+
+.errorMessage {
+    color: red;
+}

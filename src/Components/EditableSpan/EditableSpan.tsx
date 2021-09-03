@@ -1,26 +1,28 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 
 type EditableSpanType = {
-    title: string
+    incomingTitle: string
     updateText: (title: string, todolistId: string) => void
     todolistId: string
 
 }
 
-export function EditableSpan(props: EditableSpanType) {
+export const EditableSpan = React.memo( (props: EditableSpanType) => {
+
+    const {incomingTitle, updateText, todolistId} = props
 
     let [edit, setEdit] = useState(false)
-    let [title, setTitle] = useState(props.title)
+    let [title, setTitle] = useState(incomingTitle)
 
     const onDoubleClickHandler = () => {
         setEdit(true)
         setTitle('')
     }
 
-    const onBlurHandler = () => {
+    const onBlurHandler = useCallback(() => {
         setEdit(false)
-        props.updateText(title, props.todolistId)
-    }
+        updateText(title, todolistId)
+    }, [updateText, title, todolistId])
 
     const onchangeTitleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
@@ -35,9 +37,9 @@ export function EditableSpan(props: EditableSpanType) {
                    onChange={onchangeTitleHandler}
 
             /> :
-            <span onDoubleClick={onDoubleClickHandler}>{props.title}</span>
+            <span onDoubleClick={onDoubleClickHandler}>{incomingTitle}</span>
     )
-}
+})
 
 
 

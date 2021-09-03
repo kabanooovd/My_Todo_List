@@ -1,5 +1,5 @@
-import {TaskType} from "../Todolist";
-import {addTodoListACType, removeTDLACType, StateType} from "./todoList-reducer";
+import {TaskType} from "../Components/TodoList/Todolist";
+import {addTodoListACType, removeTDLACType} from "./todoList-reducer";
 import {v1} from "uuid";
 
 
