@@ -27,15 +27,15 @@ type PropsType = {
 }
 
 export const Todolist = React.memo(function ({
-    todoListID, title, tasks, removeTask, changeFilter, addTask,
-    changeTaskStatus, removeTodolist, filter, updateTask, updateTodolist,
-}: PropsType) {
+                                                 todoListID, title, tasks, removeTask, changeFilter, addTask,
+                                                 changeTaskStatus, removeTodolist, filter, updateTask, updateTodolist,
+                                             }: PropsType) {
 
     const toRemoveTodolist = useCallback(() => removeTodolist(todoListID), [removeTodolist, todoListID])
 
-    const onAllClickHandler = useCallback( () => changeFilter("all", todoListID), [changeFilter, todoListID])
-    const onActiveClickHandler = useCallback( () => changeFilter("active", todoListID), [changeFilter, todoListID])
-    const onCompletedClickHandler = useCallback( () => changeFilter("completed", todoListID), [changeFilter, todoListID])
+    const onAllClickHandler = useCallback(() => changeFilter("all", todoListID), [changeFilter, todoListID])
+    const onActiveClickHandler = useCallback(() => changeFilter("active", todoListID), [changeFilter, todoListID])
+    const onCompletedClickHandler = useCallback(() => changeFilter("completed", todoListID), [changeFilter, todoListID])
 
     const addTaskTextHandler = useCallback((text: string) => {
         addTask(text, todoListID)
@@ -51,32 +51,35 @@ export const Todolist = React.memo(function ({
             <button onClick={toRemoveTodolist}>x</button>
         </h3>
 
-        <AddItemForm addText={addTaskTextHandler} />
+        <AddItemForm addText={addTaskTextHandler}/>
 
-        <div>
-            {
-                tasks.map(t => <SingleTask key={t.id}
-                                       taskID={t.id}
-                                       todoListID={todoListID}
-                                       removeTask={removeTask}
-                                       updateTask={updateTask}
-                                       title={t.title}
-                                       isDone={t.isDone}
-                                       changeTaskStatus={changeTaskStatus}
-                    />
-                )
-            }
-        </div>
-        <div className={Styles.activityTasksContainer}>
-            <button className={filter === 'all' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
-                    onClick={onAllClickHandler}>All
-            </button>
-            <button className={filter === 'active' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
-                    onClick={onActiveClickHandler}>Active
-            </button>
-            <button className={filter === 'completed' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
-                    onClick={onCompletedClickHandler}>Completed
-            </button>
+        <div className={Styles.TDL_content}>
+            <div>
+                {
+                    tasks.map(t => <SingleTask key={t.id}
+                                               taskID={t.id}
+                                               todoListID={todoListID}
+                                               removeTask={removeTask}
+                                               updateTask={updateTask}
+                                               title={t.title}
+                                               isDone={t.isDone}
+                                               changeTaskStatus={changeTaskStatus}
+                        />
+                    )
+                }
+            </div>
+
+            <div className={Styles.activityTasksContainer}>
+                <div className={filter === 'all' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
+                     onClick={onAllClickHandler}>All
+                </div>
+                <div className={filter === 'active' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
+                     onClick={onActiveClickHandler}>Active
+                </div>
+                <div className={filter === 'completed' ? `${Styles.active_filter}` : `${Styles.none_active_filter}`}
+                     onClick={onCompletedClickHandler}>Completed
+                </div>
+            </div>
         </div>
     </div>
 })
