@@ -8,8 +8,8 @@ export const SingleTask = React.memo((props: {
     removeTask: (taskId: string, todolistId: string) => void
     updateTask: (title: string, taskId: string, todolistId: string) => void
     title: string
-    isDone: boolean
-    changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
+    status: number
+    changeTaskStatus: (id: string, status: number, todolistId: string) => void
 }) => {
 
     const {
@@ -19,13 +19,20 @@ export const SingleTask = React.memo((props: {
                     changeTaskStatus,
                     updateTask,
                     title,
-                    isDone,
+                    status,
     } = props
 
     const onClickHandler = () => removeTask(taskID, todoListID)
+
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         let newIsDoneValue = e.currentTarget.checked;
-        changeTaskStatus(taskID, newIsDoneValue, todoListID);
+        let statusVal = 0
+
+        if (newIsDoneValue) {
+            statusVal = 2
+        }
+
+        changeTaskStatus(taskID, statusVal, todoListID);
     }
     const updateTaskText = (title: string, todolistId: string) => {
         updateTask(title, taskID, todolistId)
@@ -34,7 +41,7 @@ export const SingleTask = React.memo((props: {
     return(
         <div>
             <input type="checkbox" onChange={onChangeHandler}
-                   checked={isDone}
+                   checked={status !== 0}
                    className={Styles.tasksBlock}
             />
 

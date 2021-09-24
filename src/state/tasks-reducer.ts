@@ -1,10 +1,11 @@
-import {TaskType} from "../Components/TodoList/Todolist";
-import {addTodoListACType, removeTDLACType} from "./todoList-reducer";
+// import {TaskType} from "../Components/TodoList/Todolist";
+import {addTodoListACType, removeTDLACType, setTaskAC_T} from "./todoList-reducer";
 import {v1} from "uuid";
+import {SingleTask_T} from "../DAL/tasksApi";
 
 
 export type TasksStateType = {
-    [key: string]: Array<TaskType>
+    [key: string]: Array<SingleTask_T>
 }
 
 export type GeneralActionType = addTodoListACType
@@ -13,6 +14,7 @@ export type GeneralActionType = addTodoListACType
                             | removeTDLACType
                             | editTaskTitleACType
                             | changeTaskStatusACType
+                            | setTaskAC_T
 
 const initState: TasksStateType = {}
 
@@ -22,7 +24,19 @@ export const tasksReducer = (state: TasksStateType = initState, action: GeneralA
             return {...state, [action.todolistID]: []}
         }
         case 'ADD-TASK': {
-            const newTask = {id: action.newTaskID, title: action.taskTitle, isDone: false}
+            const newTask = {
+                id: action.newTaskID,
+                title: action.taskTitle,
+                description: '',
+                status: 0,
+                priority: 0,
+                startDate: '',
+                deadline: '',
+                todoListId: '',
+                order: 0,
+                addedDate: '',
+            }
+
             return {...state, [action.todoListID]: [newTask, ...state[action.todoListID]]}
         }
         case 'REMOVE-TODOLIST': {
@@ -37,14 +51,21 @@ export const tasksReducer = (state: TasksStateType = initState, action: GeneralA
             return {...state, [action.todoListID]: state[action.todoListID].map(el => el.id === action.taskID ? {...el, title: action.taskTitle} : el)}
         }
         case 'CHANGE-TASK-STATUS': {
-            return {...state, [action.todoListID]: state[action.todoListID].map(el => el.id === action.taskID ? {...el, isDone: action.taskStatus} : el)}
+            return {...state, [action.todoListID]: state[action.todoListID].map(el => el.id === action.taskID ? {...el, status: action.taskStatus} : el)}
+        }
+        case 'SET-TASKS': {
+            let copyState = {...state}      // Создаем копию массива, с которой будем работать
+            action.TDL.forEach(el => {      // Обращаемся к каждому элементу масства (тудуЛисту)
+                copyState[el.id] = []       // Присваиваем путой массив каждому свойству
+            })
+            return copyState                // Вернем копию в обработанном виде
         }
         default: return state
     }
 }
 
 type changeTaskStatusACType = ReturnType<typeof changeTaskStatusAC>
-export const changeTaskStatusAC = (todoListID: string, taskID: string, taskStatus: boolean) => {
+export const changeTaskStatusAC = (todoListID: string, taskID: string, taskStatus: number) => {
     return {type: 'CHANGE-TASK-STATUS', todoListID, taskID, taskStatus} as const
 }
 

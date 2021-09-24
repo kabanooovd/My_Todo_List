@@ -1,29 +1,44 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
-import {TaskType, Todolist} from './Components/TodoList/Todolist';
+import {Todolist} from './Components/TodoList/Todolist';
 import {AddItemForm} from "./Components/AddItemForm/AddItemForm";
-import {addTodoListAC, changeTodoListAC, editTodoListAC, removeTDLAC} from "./state/todoList-reducer";
-import {addTaskAC, changeTaskStatusAC, editTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
+import {
+    addTodoListAC,
+    changeTodoListAC,
+    editTodoListAC,
+    removeTDLAC, setTaskAC,
+    TodoListDomainType
+} from "./state/todoList-reducer";
+import {addTaskAC, changeTaskStatusAC, editTaskTitleAC, removeTaskAC, TasksStateType} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
+import {TodoListApi} from "./DAL/tdlApi";
+// import {TodoListApi} from "./DAL/tdlApi";
 
 export type FilterValuesType = "all" | "active" | "completed";
-type TodolistType = {
-    id: string
-    title: string
-    filter: FilterValuesType
-}
+// type TodolistType = {
+//     id: string
+//     title: string
+//     filter: FilterValuesType
+// }
 
-type TasksStateType = {
-    [key: string]: Array<TaskType>
-}
+// type TasksStateType = {
+//     [key: string]: Array<TaskType>
+// }
 
 
 function App() {
     const dispatch = useDispatch()
 
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const todoLists = useSelector<AppRootStateType, TodolistType[]>(state => state.todoLists)
+    const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists)
+
+    useEffect( () => {
+        TodoListApi.getTodos()
+            .then(res => {
+                dispatch(setTaskAC(res.data))
+            })
+    }, [] )
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
         dispatch(removeTaskAC(todolistId, id))
@@ -33,8 +48,8 @@ function App() {
         dispatch(addTaskAC(title, todolistId))
     }, [dispatch])
 
-    const changeStatus = useCallback((id: string, isDone: boolean, todolistId: string) => {
-        dispatch(changeTaskStatusAC(todolistId, id, isDone))
+    const changeStatus = useCallback((id: string, status: number, todolistId: string) => {
+        dispatch(changeTaskStatusAC(todolistId, id, status))
     }, [dispatch])
 
     const changeFilter = useCallback((value: FilterValuesType, todolistId: string) => {
@@ -68,8 +83,8 @@ function App() {
                     let allTodolistTasks = tasks[tl.id];
                     let tasksForTodolist = allTodolistTasks;
 
-                    if (tl.filter === "active") tasksForTodolist = allTodolistTasks.filter(t => !t.isDone);
-                    if (tl.filter === "completed") tasksForTodolist = allTodolistTasks.filter(t => t.isDone);
+                    if (tl.filter === "active") tasksForTodolist = allTodolistTasks.filter(t => !t.status);
+                    if (tl.filter === "completed") tasksForTodolist = allTodolistTasks.filter(t => t.status);
 
                     return <Todolist
                         key={tl.id}

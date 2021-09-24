@@ -1,4 +1,5 @@
 import {v1} from "uuid";
+import {Todolist_T} from "../DAL/tdlApi";
 
 
 export type FilterValuesType = "all" | "active" | "completed";
@@ -9,11 +10,19 @@ export type StateType = {
     filter: FilterValuesType
 }
 
-const initState: StateType[] = []
+export type TodoListDomainType = Todolist_T & {
+    filter: FilterValuesType
+}
 
-export type MainActionType = removeTDLACType | addTodoListACType | editTodoListACType | changeTodoListACType
+const initState: TodoListDomainType[] = []
 
-export const todoListReducer = (state: StateType[] = initState, action: MainActionType): StateType[] => {
+export type MainActionType =        removeTDLACType
+                                | addTodoListACType
+                                | editTodoListACType
+                                | changeTodoListACType
+                                | setTaskAC_T
+
+export const todoListReducer = (state: TodoListDomainType[] = initState, action: MainActionType): StateType[] => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
             return [...state.filter(el => el.id !== action.todolistId)]
@@ -28,8 +37,16 @@ export const todoListReducer = (state: StateType[] = initState, action: MainActi
         case 'CHANGE-TDL-FILTRATION': {
             return [...state.map(el => el.id === action.todoListID? {...el, filter: action.filtration} : el)]
         }
+        case 'SET-TASKS': {
+            return action.TDL.map(el => ({...el, filter: 'all'}))       // Поместим в initialState то что придет с сервера, добавив ему filter
+        }
         default: return state
     }
+}
+
+export type setTaskAC_T = ReturnType<typeof setTaskAC>
+export const setTaskAC = (TDL: Todolist_T[]) => {
+    return {type: 'SET-TASKS', TDL} as const
 }
 
 export type removeTDLACType = ReturnType<typeof removeTDLAC>

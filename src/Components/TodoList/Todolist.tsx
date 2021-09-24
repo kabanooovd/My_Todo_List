@@ -4,21 +4,22 @@ import {FilterValuesType} from '../../App';
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {SingleTask} from "../SingleTask/SingleTask";
+import {SingleTask_T} from "../../DAL/tasksApi";
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
+// export type TaskType = {
+//     id: string
+//     title: string
+//     isDone: boolean
+// }
 
 type PropsType = {
     todoListID: string
     title: string
-    tasks: Array<TaskType>
+    tasks: Array<SingleTask_T>
     removeTask: (taskId: string, todolistId: string) => void
     changeFilter: (value: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
-    changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
+    changeTaskStatus: (id: string, status: number, todolistId: string) => void
     removeTodolist: (id: string) => void
     filter: FilterValuesType
     updateTodolist: (title: string, todolistId: string) => void
@@ -29,7 +30,7 @@ type PropsType = {
 export const Todolist = React.memo(function ({
                                                  todoListID, title, tasks, removeTask, changeFilter, addTask,
                                                  changeTaskStatus, removeTodolist, filter, updateTask, updateTodolist,
-                                             }: PropsType) {
+}: PropsType) {
 
     const toRemoveTodolist = useCallback(() => removeTodolist(todoListID), [removeTodolist, todoListID])
 
@@ -62,7 +63,7 @@ export const Todolist = React.memo(function ({
                                                removeTask={removeTask}
                                                updateTask={updateTask}
                                                title={t.title}
-                                               isDone={t.isDone}
+                                               status={t.status}
                                                changeTaskStatus={changeTaskStatus}
                         />
                     )
