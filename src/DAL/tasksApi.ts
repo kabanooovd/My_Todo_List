@@ -15,7 +15,7 @@ const instance = axios.create({
 
 export const TasksApi = {
     getTasks(todolistId: string) {
-        return instance.get<SingleTask_T[]>(`${todolistId}/tasks`)
+        return instance.get<CommonTasksType<SingleTask_T[]>>(`${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
         return instance.post<CommonResponse_T<{item: SingleTask_T}>>(`${todolistId}/tasks`, {title})
@@ -41,6 +41,15 @@ export type SingleTask_T = {
     order: number
     addedDate: string
 }
+
+type CommonTasksType<T> = {
+    items: T
+    totalCount: number
+    error: string
+}
+
+
+
 
 
 

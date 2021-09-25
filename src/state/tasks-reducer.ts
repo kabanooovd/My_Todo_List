@@ -1,5 +1,4 @@
-// import {TaskType} from "../Components/TodoList/Todolist";
-import {addTodoListACType, removeTDLACType, setTaskAC_T} from "./todoList-reducer";
+import {addTodoListACType, removeTDLACType, setTodosAC_T} from "./todoList-reducer";
 import {v1} from "uuid";
 import {SingleTask_T} from "../DAL/tasksApi";
 
@@ -14,7 +13,8 @@ export type GeneralActionType = addTodoListACType
                             | removeTDLACType
                             | editTaskTitleACType
                             | changeTaskStatusACType
-                            | setTaskAC_T
+                            | setTodosAC_T
+                            | setTasksAC_T
 
 const initState: TasksStateType = {}
 
@@ -53,15 +53,25 @@ export const tasksReducer = (state: TasksStateType = initState, action: GeneralA
         case 'CHANGE-TASK-STATUS': {
             return {...state, [action.todoListID]: state[action.todoListID].map(el => el.id === action.taskID ? {...el, status: action.taskStatus} : el)}
         }
-        case 'SET-TASKS': {
+        case 'SET-TODOS': {
             let copyState = {...state}      // Создаем копию массива, с которой будем работать
             action.TDL.forEach(el => {      // Обращаемся к каждому элементу масства (тудуЛисту)
                 copyState[el.id] = []       // Присваиваем путой массив каждому свойству
             })
             return copyState                // Вернем копию в обработанном виде
         }
+        case 'SET-TASKS': {
+            let copyState = {...state}                      // Создаем копию исходного состояния для дальнейшей обработке
+            copyState[action.todoListID] = action.tasks     // Каждому из свойств пришедших TDL, переприсваиваем соответствующие таски
+            return copyState                                // Вернем обработанную копию
+        }
         default: return state
     }
+}
+
+type setTasksAC_T = ReturnType<typeof setTasksAC>
+export const setTasksAC = (tasks: SingleTask_T[], todoListID: string) => {
+    return {type: 'SET-TASKS', tasks, todoListID} as const
 }
 
 type changeTaskStatusACType = ReturnType<typeof changeTaskStatusAC>

@@ -1,16 +1,12 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Styles from './Todolist.module.css'
 import {FilterValuesType} from '../../App';
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {SingleTask} from "../SingleTask/SingleTask";
-import {SingleTask_T} from "../../DAL/tasksApi";
-
-// export type TaskType = {
-//     id: string
-//     title: string
-//     isDone: boolean
-// }
+import {SingleTask_T, TasksApi} from "../../DAL/tasksApi";
+import {useDispatch} from "react-redux";
+import {setTasksAC} from "../../state/tasks-reducer";
 
 type PropsType = {
     todoListID: string
@@ -32,11 +28,20 @@ export const Todolist = React.memo(function ({
                                                  changeTaskStatus, removeTodolist, filter, updateTask, updateTodolist,
 }: PropsType) {
 
+    const dispatch = useDispatch()
+
     const toRemoveTodolist = useCallback(() => removeTodolist(todoListID), [removeTodolist, todoListID])
 
     const onAllClickHandler = useCallback(() => changeFilter("all", todoListID), [changeFilter, todoListID])
     const onActiveClickHandler = useCallback(() => changeFilter("active", todoListID), [changeFilter, todoListID])
     const onCompletedClickHandler = useCallback(() => changeFilter("completed", todoListID), [changeFilter, todoListID])
+
+    useEffect( () => {
+        TasksApi.getTasks(todoListID)
+            .then(res => {
+                dispatch(setTasksAC(res.data.items, todoListID))
+            })
+    }, [dispatch, todoListID] )
 
     const addTaskTextHandler = useCallback((text: string) => {
         addTask(text, todoListID)

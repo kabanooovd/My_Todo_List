@@ -20,7 +20,7 @@ export type MainActionType =        removeTDLACType
                                 | addTodoListACType
                                 | editTodoListACType
                                 | changeTodoListACType
-                                | setTaskAC_T
+                                | setTodosAC_T
 
 export const todoListReducer = (state: TodoListDomainType[] = initState, action: MainActionType): StateType[] => {
     switch (action.type) {
@@ -37,16 +37,16 @@ export const todoListReducer = (state: TodoListDomainType[] = initState, action:
         case 'CHANGE-TDL-FILTRATION': {
             return [...state.map(el => el.id === action.todoListID? {...el, filter: action.filtration} : el)]
         }
-        case 'SET-TASKS': {
+        case 'SET-TODOS': {
             return action.TDL.map(el => ({...el, filter: 'all'}))       // Поместим в initialState то что придет с сервера, добавив ему filter
         }
         default: return state
     }
 }
 
-export type setTaskAC_T = ReturnType<typeof setTaskAC>
-export const setTaskAC = (TDL: Todolist_T[]) => {
-    return {type: 'SET-TASKS', TDL} as const
+export type setTodosAC_T = ReturnType<typeof setTodosAC>
+export const setTodosAC = (TDL: Todolist_T[]) => {
+    return {type: 'SET-TODOS', TDL} as const
 }
 
 export type removeTDLACType = ReturnType<typeof removeTDLAC>

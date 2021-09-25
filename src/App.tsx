@@ -6,26 +6,15 @@ import {
     addTodoListAC,
     changeTodoListAC,
     editTodoListAC,
-    removeTDLAC, setTaskAC,
+    removeTDLAC, setTodosAC,
     TodoListDomainType
 } from "./state/todoList-reducer";
 import {addTaskAC, changeTaskStatusAC, editTaskTitleAC, removeTaskAC, TasksStateType} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
 import {TodoListApi} from "./DAL/tdlApi";
-// import {TodoListApi} from "./DAL/tdlApi";
 
 export type FilterValuesType = "all" | "active" | "completed";
-// type TodolistType = {
-//     id: string
-//     title: string
-//     filter: FilterValuesType
-// }
-
-// type TasksStateType = {
-//     [key: string]: Array<TaskType>
-// }
-
 
 function App() {
     const dispatch = useDispatch()
@@ -36,9 +25,9 @@ function App() {
     useEffect( () => {
         TodoListApi.getTodos()
             .then(res => {
-                dispatch(setTaskAC(res.data))
+                dispatch(setTodosAC(res.data))
             })
-    }, [] )
+    }, [dispatch] )
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
         dispatch(removeTaskAC(todolistId, id))
