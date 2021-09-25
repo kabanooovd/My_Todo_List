@@ -15,7 +15,6 @@ type PropsType = {
     removeTask: (taskId: string, todolistId: string) => void
     changeFilter: (value: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
-    changeTaskStatus: (id: string, status: number, todolistId: string) => void
     removeTodolist: (id: string) => void
     filter: FilterValuesType
     updateTodolist: (title: string, todolistId: string) => void
@@ -25,7 +24,7 @@ type PropsType = {
 
 export const Todolist = React.memo(function ({
                                                  todoListID, title, tasks, removeTask, changeFilter, addTask,
-                                                 changeTaskStatus, removeTodolist, filter, updateTask, updateTodolist,
+                                                 removeTodolist, filter, updateTask, updateTodolist, // changeTaskStatus,
 }: PropsType) {
 
     const dispatch = useDispatch()
@@ -66,7 +65,6 @@ export const Todolist = React.memo(function ({
                                                updateTask={updateTask}
                                                title={t.title}
                                                status={t.status}
-                                               changeTaskStatus={changeTaskStatus}
                         />
                     )
                 }

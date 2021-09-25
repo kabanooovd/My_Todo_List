@@ -1,6 +1,9 @@
 import React, {ChangeEvent} from "react";
 import Styles from './SingleTask.module.css'
 import {EditableSpan} from "../EditableSpan/EditableSpan";
+import {changeTaskStatus_TC} from "../../state/tasks-reducer";
+import {useDispatch} from "react-redux";
+import {StatusVariation} from "../../DAL/tasksApi";
 
 export const SingleTask = React.memo((props: {
     taskID: string
@@ -9,39 +12,33 @@ export const SingleTask = React.memo((props: {
     updateTask: (title: string, taskId: string, todolistId: string) => void
     title: string
     status: number
-    changeTaskStatus: (id: string, status: number, todolistId: string) => void
 }) => {
 
-    const {
-                    taskID,
-                    todoListID,
-                    removeTask,
-                    changeTaskStatus,
-                    updateTask,
-                    title,
-                    status,
-    } = props
+                                        const {
+                                            taskID,
+                                            todoListID,
+                                            removeTask,
+                                            updateTask,
+                                            title,
+                                            status,
+                                        } = props
 
     const onClickHandler = () => removeTask(taskID, todoListID)
+    const dispatch = useDispatch()
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         let newIsDoneValue = e.currentTarget.checked;
-        let statusVal = 0
-
-        if (newIsDoneValue) {
-            statusVal = 2
-        }
-
-        changeTaskStatus(taskID, statusVal, todoListID);
+        let statusVal = StatusVariation.New
+        if (newIsDoneValue) statusVal = StatusVariation.Completed
+        dispatch(changeTaskStatus_TC(todoListID, taskID, statusVal))
     }
-    const updateTaskText = (title: string, todolistId: string) => {
-        updateTask(title, taskID, todolistId)
-    }
+    const updateTaskText = (title: string, todolistId: string) => updateTask(title, taskID, todolistId)
 
-    return(
+    return (
         <div>
-            <input type="checkbox" onChange={onChangeHandler}
-                   checked={status !== 0}
+            <input type="checkbox"
+                   onChange={onChangeHandler}
+                   checked={status === StatusVariation.Completed}
                    className={Styles.tasksBlock}
             />
 

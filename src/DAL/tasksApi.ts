@@ -23,16 +23,40 @@ export const TasksApi = {
     removeTask(todolistId: string, taskId: string) {
         return instance.delete<CommonResponse_T<{}>>(`${todolistId}/tasks/${taskId}`)
     },
-    updateTask(todolistId: string, taskId: string, title: string) {
-        return instance.put<CommonResponse_T<{}>>(`${todolistId}/tasks/${taskId}`, {title})
-    }
+    updateTask(todolistId: string, taskId: string, TaskPayload: TaskPayload_T) {
+        return instance.put<CommonResponse_T<{item: SingleTask_T}>>(`${todolistId}/tasks/${taskId}`, TaskPayload)
+    },
+    // switchTaskStatus(todolistId: string, taskId: string, status: number, title: string) {
+    //     return instance.put<CommonResponse_T<{item: SingleTask_T}>>(`${todolistId}/tasks/${taskId}`, {status, title})
+    // }
+}
+
+export type TaskPayload_T = {
+    title: string;
+    description: string;
+    status: StatusVariation;
+    priority: number;
+    startDate: string;
+    deadline: string;
+    id: string;
+    todoListId: string;
+    order: number;
+    addedDate: string;
+}
+
+
+export enum StatusVariation {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 3
 }
 
 
 export type SingleTask_T = {
     description: string
     title: string
-    status: number
+    status: StatusVariation
     priority: number
     startDate: string
     deadline: string
