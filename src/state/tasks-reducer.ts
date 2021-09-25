@@ -1,27 +1,30 @@
 import {addTodoListACType, removeTDLACType, setTodosAC_T} from "./todoList-reducer";
 import {v1} from "uuid";
-import {SingleTask_T} from "../DAL/tasksApi";
+import {SingleTask_T, TasksApi} from "../DAL/tasksApi";
+import {Dispatch} from "redux";
 
 
 export type TasksStateType = {
     [key: string]: Array<SingleTask_T>
 }
 
-export type GeneralActionType = addTodoListACType
-                            | addTaskACType
-                            | removeTaskACType
-                            | removeTDLACType
-                            | editTaskTitleACType
-                            | changeTaskStatusACType
-                            | setTodosAC_T
-                            | setTasksAC_T
+export type GeneralActionType    =    addTodoListACType
+                                    | addTaskACType
+                                    | removeTaskACType
+                                    | removeTDLACType
+                                    | editTaskTitleACType
+                                    | changeTaskStatusACType
+                                    | setTodosAC_T
+                                    | setTasksAC_T
 
 const initState: TasksStateType = {}
 
 export const tasksReducer = (state: TasksStateType = initState, action: GeneralActionType): TasksStateType => {
     switch (action.type) {
         case 'ADD-TODOLIST': {
-            return {...state, [action.todolistID]: []}
+            return {...state, [action.TDL.id]: []}
+
+            // return state
         }
         case 'ADD-TASK': {
             const newTask = {
@@ -92,6 +95,13 @@ export const addTaskAC = (taskTitle: string, todoListID: string): addTaskACType 
 type removeTaskACType = ReturnType<typeof removeTaskAC>
 export const removeTaskAC = (todoListID: string, taskID: string) => {
     return {type: 'REMOVE-TASK', todoListID, taskID} as const
+}
+
+export const setTasksTC = (todoListID: string) => (dispatch: Dispatch) => {
+    TasksApi.getTasks(todoListID)
+        .then(res => {
+            dispatch(setTasksAC(res.data.items, todoListID))
+        })
 }
 
 

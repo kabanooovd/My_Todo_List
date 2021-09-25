@@ -4,9 +4,9 @@ import {FilterValuesType} from '../../App';
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {SingleTask} from "../SingleTask/SingleTask";
-import {SingleTask_T, TasksApi} from "../../DAL/tasksApi";
+import {SingleTask_T} from "../../DAL/tasksApi";
 import {useDispatch} from "react-redux";
-import {setTasksAC} from "../../state/tasks-reducer";
+import {setTasksTC} from "../../state/tasks-reducer";
 
 type PropsType = {
     todoListID: string
@@ -37,11 +37,8 @@ export const Todolist = React.memo(function ({
     const onCompletedClickHandler = useCallback(() => changeFilter("completed", todoListID), [changeFilter, todoListID])
 
     useEffect( () => {
-        TasksApi.getTasks(todoListID)
-            .then(res => {
-                dispatch(setTasksAC(res.data.items, todoListID))
-            })
-    }, [dispatch, todoListID] )
+        dispatch(setTasksTC(todoListID))
+    }, [dispatch] )
 
     const addTaskTextHandler = useCallback((text: string) => {
         addTask(text, todoListID)

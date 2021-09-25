@@ -3,16 +3,16 @@ import './App.css';
 import {Todolist} from './Components/TodoList/Todolist';
 import {AddItemForm} from "./Components/AddItemForm/AddItemForm";
 import {
-    addTodoListAC,
     changeTodoListAC,
-    editTodoListAC,
-    removeTDLAC, setTodosAC,
-    TodoListDomainType
+    createNewTDL_TC,
+    RM_TDL_TC,
+    setTodoListsThunk,
+    TodoListDomainType,
+    updateTodolistTitle_TC
 } from "./state/todoList-reducer";
 import {addTaskAC, changeTaskStatusAC, editTaskTitleAC, removeTaskAC, TasksStateType} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
-import {TodoListApi} from "./DAL/tdlApi";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -23,10 +23,7 @@ function App() {
     const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists)
 
     useEffect( () => {
-        TodoListApi.getTodos()
-            .then(res => {
-                dispatch(setTodosAC(res.data))
-            })
+        dispatch(setTodoListsThunk)
     }, [dispatch] )
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
@@ -46,11 +43,11 @@ function App() {
     }, [dispatch])
 
     const removeTodolist = useCallback((todolistId: string) => {
-        dispatch(removeTDLAC(todolistId))
+        dispatch(RM_TDL_TC(todolistId))
     }, [dispatch])
 
     const addTodolist = useCallback((title: string) => {
-        dispatch(addTodoListAC(title))
+        dispatch(createNewTDL_TC(title))
     }, [dispatch])
 
     const updateTask = useCallback((title: string, taskId: string, todolistId: string) => {
@@ -58,7 +55,7 @@ function App() {
     }, [dispatch])
 
     const updateTodolist = useCallback((title: string, todolistId: string) => {
-        dispatch(editTodoListAC(todolistId, title))
+        dispatch(updateTodolistTitle_TC(todolistId, title))
     }, [dispatch])
 
     return (
