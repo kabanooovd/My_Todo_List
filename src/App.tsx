@@ -91,6 +91,7 @@ function App() {
                                 removeTodolist={removeTodolist}
                                 updateTask={updateTask}
                                 updateTodolist={updateTodolist}
+                                entityStatus={tl.entityStatus}
                             />
                         })
                     }

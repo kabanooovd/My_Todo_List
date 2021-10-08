@@ -1,5 +1,8 @@
 import React, {useCallback, useState} from "react";
 import s from './EditableSpan.module.css'
+import {useSelector} from "react-redux";
+import {AppRootStateType} from "../../state/store";
+import {LoaderStatus_T} from "../../state/app-reducer";
 
 type EditableSpanType = {
     incomingTitle: string
@@ -12,12 +15,16 @@ export const EditableSpan = React.memo((props: EditableSpanType) => {
 
     const {incomingTitle, updateText, todolistId} = props
 
+    const loadingStatus = useSelector<AppRootStateType, LoaderStatus_T>(state => state.appData.loaderStatus)
+
     let [edit, setEdit] = useState(false)
     let [title, setTitle] = useState(incomingTitle)
 
     const onDoubleClickHandler = () => {
-        setEdit(true)
-        setTitle('')
+        if (loadingStatus !== 'loading') {
+            setEdit(true)
+            setTitle('')
+        }
     }
 
     const onBlurHandler = useCallback(() => {

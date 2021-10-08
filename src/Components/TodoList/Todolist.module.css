@@ -1,12 +1,11 @@
 .MainTDLContainer {
     padding: 20px 60px 20px 60px;
     margin: 20px;
-    border: 2px solid white;
-    min-height: 300px;
-    max-height: 500px;
+    /*min-height: 300px;*/
     display: flex;
     flex-direction: column;
-    background: rgba(52, 75, 132, 0.33);
+    background: rgba(52, 75, 132, 0.5);
+    border-radius: 10px;
 }
 
 .active_filter {
@@ -65,4 +64,21 @@
     color: #0b39e2;
     border: 1px solid transparent;
 }
+.rmIconStyle:disabled {
+    background-color: #585858;
+    color: #9e9c9c;
+    border: 1px solid transparent;
+}
+.rmIconStyle:disabled:hover {
+    background-color: #585858;
+    color: #9e9c9c;
+    border: 1px solid transparent;
+}
 
+
+
+@media screen and (max-width: 387px) {
+    .MainTDLContainer {
+        padding: 10px 30px 10px 30px;
+    }
+}

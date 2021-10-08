@@ -23,7 +23,7 @@ export const ErrorHandler = () => {
     return (
         <>
             <Alert
-                message="Error Text"
+                message="Some error has occurred..."
                 description={`${errorMode}`}
                 type="error"
                 closable

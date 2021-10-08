@@ -1,11 +1,14 @@
 import {Todolist_T, TodoListApi} from "../DAL/tdlApi";
 import {Dispatch} from "redux";
-import {setAppErrorMode, setAppLoaderStatus} from "./app-reducer";
-import {handleUserErrors} from "../utils/utils";
+import {LoaderStatus_T, setAppLoaderStatus} from "./app-reducer";
+import {handleNetworkError, handleUserErrors} from "../utils/utils";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
-export type TodoListDomainType = Todolist_T & { filter: FilterValuesType }
+export type TodoListDomainType = Todolist_T & {
+    filter: FilterValuesType
+    entityStatus: LoaderStatus_T
+}
 
 const initState: TodoListDomainType[] = []
 
@@ -14,6 +17,7 @@ export type MainActionType      =         removeTDLACType
                                         | editTodoListACType
                                         | changeTodoListACType
                                         | setTodosAC_T
+                                        | SwitchTdlEntityStatusAC_T
 
 export const todoListReducer = (state: TodoListDomainType[] = initState, action: MainActionType): TodoListDomainType[] => {
     switch (action.type) {
@@ -26,7 +30,8 @@ export const todoListReducer = (state: TodoListDomainType[] = initState, action:
                 title: action.TDL.title,
                 addedDate: action.TDL.addedDate,
                 order: action.TDL.order,
-                filter: 'all'
+                filter: 'all',
+                entityStatus: 'idle',
             }
             return [newTodoList, ...state]
         }
@@ -37,10 +42,18 @@ export const todoListReducer = (state: TodoListDomainType[] = initState, action:
             return [...state.map(el => el.id === action.todoListID? {...el, filter: action.filtration} : el)]
         }
         case 'SET-TODOS': {
-            return action.TDL.map(el => ({...el, filter: 'all'}))       // Поместим в initialState то что придет с сервера, добавив ему filter
+            return action.TDL.map(el => ({...el, filter: 'all', entityStatus: 'idle'}))       // Поместим в initialState то что придет с сервера, добавив ему filter
+        }
+        case 'TDL/SET-ENTITY-STATUS': {
+            return state.map(el => el.id === action.todoListID ? {...el, entityStatus: action.entityStatus} : el)
         }
         default: return state
     }
+}
+
+export type SwitchTdlEntityStatusAC_T = ReturnType<typeof switchTdlEntityStatusAC>
+export const switchTdlEntityStatusAC = (entityStatus: LoaderStatus_T, todoListID: string) => {
+    return {type: 'TDL/SET-ENTITY-STATUS', entityStatus, todoListID} as const
 }
 
 export type setTodosAC_T = ReturnType<typeof setTodosAC>
@@ -77,6 +90,9 @@ export const updateTodolistTitle_TC = (todolistId: string, title: string) => (di
             dispatch(editTodoListAC(todolistId, title))
             dispatch(setAppLoaderStatus('succeeded'))
         })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
+        })
 }
 export const createNewTDL_TC = (title: string) => (dispatch: Dispatch) => {
     dispatch(setAppLoaderStatus('loading'))
@@ -90,13 +106,20 @@ export const createNewTDL_TC = (title: string) => (dispatch: Dispatch) => {
             }
 
         })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
+        })
 }
 export const RM_TDL_TC = (todoListID: string) => (dispatch: Dispatch) => {
     dispatch(setAppLoaderStatus('loading'))
+    dispatch(switchTdlEntityStatusAC('loading', todoListID))
     TodoListApi.deleteTodolist(todoListID)
         .then(() => {
             dispatch(removeTDLAC(todoListID))
             dispatch(setAppLoaderStatus('succeeded'))
+        })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
         })
 }
 export const setTodoListsThunk = (dispatch: Dispatch) => {
@@ -105,6 +128,9 @@ export const setTodoListsThunk = (dispatch: Dispatch) => {
         .then(res => {
             dispatch(setTodosAC(res.data))
             dispatch(setAppLoaderStatus('succeeded'))
+        })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
         })
 }
 

@@ -4,19 +4,15 @@ import {FilterValuesType} from '../../App';
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {SingleTask} from "../SingleTask/SingleTask";
-import {SingleTask_T} from "../../DAL/tasksApi";
-import {useDispatch, useSelector} from "react-redux";
-import {setTasksTC} from "../../state/tasks-reducer";
+import {useDispatch} from "react-redux";
+import {setTasksTC, TaskDomain_T} from "../../state/tasks-reducer";
 import {DeleteOutlined} from "@ant-design/icons";
-import {AppRootStateType} from "../../state/store";
-import {AppReducer_T} from "../../state/app-reducer";
-import {setTodoListsThunk} from "../../state/todoList-reducer";
-import {notification} from "antd";
+import {LoaderStatus_T} from "../../state/app-reducer";
 
 type PropsType = {
     todoListID: string
     title: string
-    tasks: Array<SingleTask_T>
+    tasks: Array<TaskDomain_T>
     removeTask: (taskId: string, todolistId: string) => void
     changeFilter: (value: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
@@ -24,12 +20,11 @@ type PropsType = {
     filter: FilterValuesType
     updateTodolist: (title: string, todolistId: string) => void
     updateTask: (title: string, taskId: string, todolistId: string) => void
-
+    entityStatus: LoaderStatus_T
 }
 
 export const Todolist = React.memo(function ({
-                                                 todoListID, title, tasks, removeTask, changeFilter, addTask,
-                                                 removeTodolist, filter, updateTask, updateTodolist, // changeTaskStatus,
+todoListID, title, tasks, removeTask, changeFilter, addTask, removeTodolist, filter, updateTask, updateTodolist, entityStatus,
 }: PropsType) {
 
     const dispatch = useDispatch()
@@ -55,7 +50,10 @@ export const Todolist = React.memo(function ({
                           todolistId={todoListID}
             />
 
-            <button onClick={toRemoveTodolist} className={Styles.rmIconStyle}>
+            <button onClick={toRemoveTodolist}
+                    disabled={entityStatus === 'loading'}
+                    className={Styles.rmIconStyle}
+            >
                 <DeleteOutlined />
             </button>
         </h2>
@@ -72,7 +70,7 @@ export const Todolist = React.memo(function ({
                                                updateTask={updateTask}
                                                title={t.title}
                                                status={t.status}
-
+                                               entityStatus={t.entityStatus}
                         />
                     )
                 }

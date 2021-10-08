@@ -2,12 +2,16 @@ import {addTodoListACType, removeTDLACType, setTodosAC_T} from "./todoList-reduc
 import {SingleTask_T, TaskPayload_T, TasksApi} from "../DAL/tasksApi";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "./store";
-import {setAppLoaderStatus} from "./app-reducer";
-import {handleUserErrors} from "../utils/utils";
+import {LoaderStatus_T, setAppErrorMode, setAppLoaderStatus} from "./app-reducer";
+import {handleNetworkError, handleUserErrors} from "../utils/utils";
+
+export type TaskDomain_T = SingleTask_T & {
+    entityStatus: LoaderStatus_T
+}
 
 
 export type TasksStateType = {
-    [key: string]: Array<SingleTask_T>
+    [key: string]: Array<TaskDomain_T>
 }
 
 export type GeneralActionType    =    addTodoListACType
@@ -18,6 +22,7 @@ export type GeneralActionType    =    addTodoListACType
                                     | changeTaskStatusACType
                                     | setTodosAC_T
                                     | setTasksAC_T
+                                    | SwitchTaskEntityStatusAC_T
 
 const initState: TasksStateType = {}
 
@@ -38,8 +43,13 @@ export const tasksReducer = (state: TasksStateType = initState, action: GeneralA
                 todoListId: action.task.todoListId,
                 order: action.task.order,
                 addedDate: action.task.addedDate,
+                entityStatus: 'idle',
             }
-            return {...state, [action.task.todoListId]: [newTask, ...state[action.task.todoListId]]}
+            return {
+                ...state,
+                [action.task.todoListId]: [newTask, ...state[action.task.todoListId]]
+                    .map(el => ({...el, entityStatus: 'idle'}))
+            }
         }
         case 'REMOVE-TODOLIST': {
             let newState = {...state}
@@ -73,12 +83,26 @@ export const tasksReducer = (state: TasksStateType = initState, action: GeneralA
             return copyState                // Вернем копию в обработанном виде
         }
         case 'SET-TASKS': {
-            let copyState = {...state}                      // Создаем копию исходного состояния для дальнейшей обработке
-            copyState[action.todoListID] = action.tasks     // Каждому из свойств пришедших TDL, переприсваиваем соответствующие таски
-            return copyState                                // Вернем обработанную копию
+            let copyState = {...state}
+            copyState[action.todoListID] = action.tasks
+                .map(el => ({...el, entityStatus: 'idle'}))
+            return copyState
         }
+        case 'TASKS/SWITCH-ENTITY-STATUS': {
+            return {
+                ...state,
+                [action.todoListID]: state[action.todoListID]
+                    .map(el => el.id === action.taskID ? {...el, entityStatus: action.entityStatus} : el)
+            }
+        }
+
         default: return state
     }
+}
+
+type SwitchTaskEntityStatusAC_T = ReturnType<typeof switchTaskEntityStatusAC>
+export const switchTaskEntityStatusAC = (entityStatus: LoaderStatus_T, todoListID: string, taskID: string) => {
+    return {type: 'TASKS/SWITCH-ENTITY-STATUS', entityStatus, todoListID, taskID} as const
 }
 
 type setTasksAC_T = ReturnType<typeof setTasksAC>
@@ -128,7 +152,9 @@ export const changeTaskStatus_TC = (todolistId: string, taskId: string, status: 
                 } else {
                     handleUserErrors(res.data, dispatch)
                 }
-
+            })
+            .catch(err => {
+                handleNetworkError(err.message, dispatch)
             })
 }
 export const editTaskTitle_TC = (todolistId: string, taskId: string, title: string) =>
@@ -153,6 +179,9 @@ export const editTaskTitle_TC = (todolistId: string, taskId: string, title: stri
                     }
 
                 })
+                .catch(err => {
+                    handleNetworkError(err.message, dispatch)
+                })
         }
     }
 export const addTask_TC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
@@ -166,13 +195,20 @@ export const addTask_TC = (todolistId: string, title: string) => (dispatch: Disp
                 handleUserErrors(res.data, dispatch)
             }
         })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
+        })
 }
 export const removeTask_TC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
     dispatch(setAppLoaderStatus('loading'))
+    dispatch(switchTaskEntityStatusAC('loading', todolistId, taskId))
     TasksApi.removeTask(todolistId, taskId)
         .then(() => {
             dispatch(removeTaskAC(todolistId, taskId))
             dispatch(setAppLoaderStatus('succeeded'))
+        })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
         })
 }
 export const setTasksTC = (todoListID: string) => (dispatch: Dispatch) => {
@@ -181,6 +217,9 @@ export const setTasksTC = (todoListID: string) => (dispatch: Dispatch) => {
         .then(res => {
             dispatch(setTasksAC(res.data.items, todoListID))
             dispatch(setAppLoaderStatus('succeeded'))
+        })
+        .catch(err => {
+            handleNetworkError(err.message, dispatch)
         })
 }
 

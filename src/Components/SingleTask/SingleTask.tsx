@@ -5,7 +5,7 @@ import {changeTaskStatus_TC} from "../../state/tasks-reducer";
 import {useDispatch} from "react-redux";
 import {StatusVariation} from "../../DAL/tasksApi";
 import {DeleteOutlined} from "@ant-design/icons";
-// import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
+import {LoaderStatus_T} from "../../state/app-reducer";
 
 export const SingleTask = React.memo((props: {
     taskID: string
@@ -14,6 +14,7 @@ export const SingleTask = React.memo((props: {
     updateTask: (title: string, taskId: string, todolistId: string) => void
     title: string
     status: number
+    entityStatus: LoaderStatus_T
 }) => {
 
                                         const {
@@ -23,6 +24,7 @@ export const SingleTask = React.memo((props: {
                                             updateTask,
                                             title,
                                             status,
+                                            entityStatus,
                                         } = props
 
     const onClickHandler = () => removeTask(taskID, todoListID)
@@ -42,6 +44,7 @@ export const SingleTask = React.memo((props: {
                 <input type="checkbox"
                        onChange={onChangeHandler}
                        checked={status === StatusVariation.Completed}
+                       disabled={entityStatus === 'loading'}
                 />
 
                 <EditableSpan incomingTitle={title}
@@ -51,7 +54,7 @@ export const SingleTask = React.memo((props: {
             </div>
             <button onClick={onClickHandler}
                     className={Styles.rmIconStyle}
-                    disabled={false}>
+                    disabled={entityStatus === 'loading'}>
                     <DeleteOutlined />
             </button>
         </div>

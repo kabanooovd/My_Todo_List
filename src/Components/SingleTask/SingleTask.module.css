@@ -8,6 +8,7 @@
 }
 
 .rmIconStyle {
+    cursor: pointer;
     font-size: 12px;
     width: 30px;
     height: 30px;
@@ -17,9 +18,19 @@
     border: 1px solid snow;
     border-radius: 26px;
 }
-
 .rmIconStyle:hover {
     background-color: #dbcccc;
     color: #0b39e2;
+    border: 1px solid transparent;
+}
+.rmIconStyle:disabled {
+    background-color: #585858;
+    color: #9e9c9c;
+    border: 1px solid transparent;
+}
+.rmIconStyle:disabled:hover {
+    background-color: #585858;
+    color: #9e9c9c;
+    /*border: 1px solid snow;*/
     border: 1px solid transparent;
 }

@@ -12,3 +12,16 @@ export const handleUserErrors = <T>(data: CommonResponse_T<T>, dispatch: Dispatc
         dispatch(setAppLoaderStatus('failed'))
     }
 }
+
+
+export const handleNetworkError = (message: string, dispatch: Dispatch) => {
+    if (message !== '') {
+        dispatch(setAppErrorMode(message))
+    } else {
+        dispatch(setAppErrorMode('Check your net-work please...'))
+    }
+    dispatch(setAppLoaderStatus('failed'))
+}
+
+
+
