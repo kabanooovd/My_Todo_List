@@ -1,5 +1,7 @@
 import {Todolist_T, TodoListApi} from "../DAL/tdlApi";
 import {Dispatch} from "redux";
+import {setAppErrorMode, setAppLoaderStatus} from "./app-reducer";
+import {handleUserErrors} from "../utils/utils";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -69,27 +71,40 @@ export const changeTodoListAC = (todoListID: string, filtration: FilterValuesTyp
 
 
 export const updateTodolistTitle_TC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TodoListApi.updateTodoList(todolistId, title)
         .then(() => {
             dispatch(editTodoListAC(todolistId, title))
+            dispatch(setAppLoaderStatus('succeeded'))
         })
 }
 export const createNewTDL_TC = (title: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TodoListApi.createTodoList(title)
         .then(res => {
-            dispatch(addTodoListAC(res.data.data.item))
+            if (res.data.resultCode === 0) {
+                dispatch(addTodoListAC(res.data.data.item))
+                dispatch(setAppLoaderStatus('succeeded'))
+            } else {
+                handleUserErrors(res.data, dispatch)
+            }
+
         })
 }
 export const RM_TDL_TC = (todoListID: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TodoListApi.deleteTodolist(todoListID)
         .then(() => {
             dispatch(removeTDLAC(todoListID))
+            dispatch(setAppLoaderStatus('succeeded'))
         })
 }
 export const setTodoListsThunk = (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TodoListApi.getTodos()
         .then(res => {
             dispatch(setTodosAC(res.data))
+            dispatch(setAppLoaderStatus('succeeded'))
         })
 }
 

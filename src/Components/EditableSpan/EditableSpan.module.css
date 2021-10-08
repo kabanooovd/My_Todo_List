@@ -1,0 +1,13 @@
+.inputStyle {
+    background-color: transparent;
+    margin: 0 50px 0 15px;
+    outline: none;
+    border-bottom: 2px solid snow;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+}
+
+.spanStyle {
+    margin: 0 50px 0 5px;
+}

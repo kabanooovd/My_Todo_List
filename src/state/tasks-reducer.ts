@@ -2,6 +2,8 @@ import {addTodoListACType, removeTDLACType, setTodosAC_T} from "./todoList-reduc
 import {SingleTask_T, TaskPayload_T, TasksApi} from "../DAL/tasksApi";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "./store";
+import {setAppLoaderStatus} from "./app-reducer";
+import {handleUserErrors} from "../utils/utils";
 
 
 export type TasksStateType = {
@@ -117,10 +119,16 @@ export const changeTaskStatus_TC = (todolistId: string, taskId: string, status: 
         }
 
         let TaskPayload: TaskPayload_T = {...foundTask, status}
-
+        dispatch(setAppLoaderStatus('loading'))
         TasksApi.updateTask(todolistId, taskId, TaskPayload)
             .then(res => {
-                dispatch(changeTaskStatusAC(res.data.data.item))
+                if (res.data.resultCode === 0) {
+                    dispatch(changeTaskStatusAC(res.data.data.item))
+                    dispatch(setAppLoaderStatus('succeeded'))
+                } else {
+                    handleUserErrors(res.data, dispatch)
+                }
+
             })
 }
 export const editTaskTitle_TC = (todolistId: string, taskId: string, title: string) =>
@@ -134,27 +142,45 @@ export const editTaskTitle_TC = (todolistId: string, taskId: string, title: stri
 
         if (chosenTask) {
             let TaskPayload: TaskPayload_T = {...chosenTask, title: title}
+            dispatch(setAppLoaderStatus('loading'))
             TasksApi.updateTask(todolistId, taskId, TaskPayload)
                 .then(res => {
-                    // console.log(res.data.data.item)
-                    dispatch(editTaskTitleAC(res.data.data.item))
+                    if (res.data.resultCode === 0) {
+                        dispatch(editTaskTitleAC(res.data.data.item))
+                        dispatch(setAppLoaderStatus('succeeded'))
+                    } else {
+                        handleUserErrors(res.data, dispatch)
+                    }
+
                 })
         }
     }
 export const addTask_TC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TasksApi.createTask(todolistId, title)
-        .then(res => dispatch(addTaskAC(res.data.data.item)))
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(addTaskAC(res.data.data.item))
+                dispatch(setAppLoaderStatus('succeeded'))
+            } else {
+                handleUserErrors(res.data, dispatch)
+            }
+        })
 }
 export const removeTask_TC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TasksApi.removeTask(todolistId, taskId)
         .then(() => {
             dispatch(removeTaskAC(todolistId, taskId))
+            dispatch(setAppLoaderStatus('succeeded'))
         })
 }
 export const setTasksTC = (todoListID: string) => (dispatch: Dispatch) => {
+    dispatch(setAppLoaderStatus('loading'))
     TasksApi.getTasks(todoListID)
         .then(res => {
             dispatch(setTasksAC(res.data.items, todoListID))
+            dispatch(setAppLoaderStatus('succeeded'))
         })
 }
 

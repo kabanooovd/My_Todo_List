@@ -1,11 +1,10 @@
 import styles from './SuperHeader.module.css'
-import img from './superHeaderImg.png'
 
 
 export const SuperHeader = () => {
 
     return(
-        <div style={{'background': `url(${img})`}} className={styles.headerWrapper}>
+        <div className={styles.headerWrapper}>
             <div className={styles.xxx}>
                 <div>
                     <h1 className={styles.headerTitle}>

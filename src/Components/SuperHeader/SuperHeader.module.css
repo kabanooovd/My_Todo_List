@@ -3,12 +3,12 @@
     height: 150px;
     display: flex;
     justify-content: start;
-    margin-left: 20px;
     align-items: center;
+    background-color: #3e3c3c;
 }
 
 .headerTitle {
-    margin: 0;
+    margin-left: 20px;
     color: snow;
 }
 

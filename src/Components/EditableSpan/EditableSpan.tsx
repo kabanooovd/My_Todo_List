@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from "react";
+import s from './EditableSpan.module.css'
 
 type EditableSpanType = {
     incomingTitle: string
@@ -7,7 +8,7 @@ type EditableSpanType = {
 
 }
 
-export const EditableSpan = React.memo( (props: EditableSpanType) => {
+export const EditableSpan = React.memo((props: EditableSpanType) => {
 
     const {incomingTitle, updateText, todolistId} = props
 
@@ -35,9 +36,13 @@ export const EditableSpan = React.memo( (props: EditableSpanType) => {
                    value={title}
                    autoFocus
                    onChange={onchangeTitleHandler}
-
+                   className={s.inputStyle}
             /> :
-            <span onDoubleClick={onDoubleClickHandler}>{incomingTitle}</span>
+            <span onDoubleClick={onDoubleClickHandler}
+                  className={s.spanStyle}
+            >
+                {incomingTitle}
+            </span>
     )
 })
 

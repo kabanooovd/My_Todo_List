@@ -5,9 +5,13 @@ import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {SingleTask} from "../SingleTask/SingleTask";
 import {SingleTask_T} from "../../DAL/tasksApi";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setTasksTC} from "../../state/tasks-reducer";
 import {DeleteOutlined} from "@ant-design/icons";
+import {AppRootStateType} from "../../state/store";
+import {AppReducer_T} from "../../state/app-reducer";
+import {setTodoListsThunk} from "../../state/todoList-reducer";
+import {notification} from "antd";
 
 type PropsType = {
     todoListID: string

@@ -15,6 +15,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
 import {SuperHeader} from "./Components/SuperHeader/SuperHeader";
 import {SuperLoader} from "./Components/SuperLoader/SuperLoader";
+import {AppReducer_T} from "./state/app-reducer";
+import {ErrorHandler} from "./Components/ErrorHandler/ErrorHandler";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -23,6 +25,7 @@ function App() {
 
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists)
+    const appData = useSelector<AppRootStateType, AppReducer_T>(state => state.appData)
 
     useEffect(() => {
         dispatch(setTodoListsThunk)
@@ -58,8 +61,11 @@ function App() {
 
     return (
         <div>
-            <SuperHeader />
-            <SuperLoader />
+            <SuperHeader/>
+            <div className={'loaderWrapper'}>
+                {appData.loaderStatus === 'loading' && <SuperLoader/>}
+                {appData.errorMode !== null && <ErrorHandler/>}
+            </div>
             <div className="App">
                 <div>
                     <AddItemForm addText={addTodolist}/>
