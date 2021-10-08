@@ -4,6 +4,8 @@ import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {changeTaskStatus_TC} from "../../state/tasks-reducer";
 import {useDispatch} from "react-redux";
 import {StatusVariation} from "../../DAL/tasksApi";
+import {DeleteOutlined} from "@ant-design/icons";
+// import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 
 export const SingleTask = React.memo((props: {
     taskID: string
@@ -35,19 +37,23 @@ export const SingleTask = React.memo((props: {
     const updateTaskText = (title: string, todolistId: string) => updateTask(title, taskID, todolistId)
 
     return (
-        <div>
-            <input type="checkbox"
-                   onChange={onChangeHandler}
-                   checked={status === StatusVariation.Completed}
-                   className={Styles.tasksBlock}
-            />
+        <div  className={Styles.eachSingleTaskStyle}>
+            <div>
+                <input type="checkbox"
+                       onChange={onChangeHandler}
+                       checked={status === StatusVariation.Completed}
+                />
 
-            <EditableSpan incomingTitle={title}
-                          updateText={updateTaskText}
-                          todolistId={todoListID}
-            />
-
-            <button onClick={onClickHandler}>x</button>
+                <EditableSpan incomingTitle={title}
+                              updateText={updateTaskText}
+                              todolistId={todoListID}
+                />
+            </div>
+            <button onClick={onClickHandler}
+                    className={Styles.rmIconStyle}
+                    disabled={false}>
+                    <DeleteOutlined />
+            </button>
         </div>
     )
 })

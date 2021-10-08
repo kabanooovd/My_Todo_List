@@ -7,6 +7,7 @@ import {SingleTask} from "../SingleTask/SingleTask";
 import {SingleTask_T} from "../../DAL/tasksApi";
 import {useDispatch} from "react-redux";
 import {setTasksTC} from "../../state/tasks-reducer";
+import {DeleteOutlined} from "@ant-design/icons";
 
 type PropsType = {
     todoListID: string
@@ -44,14 +45,16 @@ export const Todolist = React.memo(function ({
     }, [addTask, todoListID])
 
     return <div className={Styles.MainTDLContainer}>
-        <h3>
+        <h2 className={Styles.todolistHeaderStyle}>
             <EditableSpan incomingTitle={title}
                           updateText={updateTodolist}
                           todolistId={todoListID}
             />
 
-            <button onClick={toRemoveTodolist}>x</button>
-        </h3>
+            <button onClick={toRemoveTodolist} className={Styles.rmIconStyle}>
+                <DeleteOutlined />
+            </button>
+        </h2>
 
         <AddItemForm addText={addTaskTextHandler}/>
 
@@ -65,6 +68,7 @@ export const Todolist = React.memo(function ({
                                                updateTask={updateTask}
                                                title={t.title}
                                                status={t.status}
+
                         />
                     )
                 }

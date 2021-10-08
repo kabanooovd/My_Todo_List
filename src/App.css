@@ -1,17 +1,24 @@
 .App {
   padding: 30px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+
 }
-
-.App > div {
-  margin-right: 50px;
-}
-
-
-
-
 
 .is-done {
   opacity: 0.5;
 }
+
+.tdlWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  /*padding: 20px;*/
+  /*margin: 20px;*/
+}
+
+
+
+

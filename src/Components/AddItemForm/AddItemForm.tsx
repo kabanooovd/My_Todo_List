@@ -1,5 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useCallback, useState} from "react";
 import s from './AddItemForm.module.css'
+import {PlusSquareOutlined} from "@ant-design/icons";
 
 export type AddItemFormType = {
     addText: (title: string) => void
@@ -41,7 +42,9 @@ export const AddItemForm = React.memo(function (props: AddItemFormType) {
                    onKeyPress={onKeyPressHandler}
                    className={error ? `${s.error}` : `${s.notError}`}
             />
-            <button onClick={addTask}>+</button>
+            <button onClick={addTask} className={s.addBtnStyles}>
+                <PlusSquareOutlined />
+            </button>
             {error && <div className={`${s.errorMessage}`}>{error}</div>}
         </div>
     )

@@ -5,8 +5,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   background-image: url("https://catherineasquithgallery.com/uploads/posts/2021-02/1612728007_43-p-cherno-goluboi-fon-57.jpg");
-  color: snow;
+  /*color: snow;*/
+
 }
 
 code {

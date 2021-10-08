@@ -10,9 +10,11 @@ import {
     TodoListDomainType,
     updateTodolistTitle_TC
 } from "./state/todoList-reducer";
-import { addTask_TC, editTaskTitle_TC, removeTask_TC, TasksStateType} from "./state/tasks-reducer";
+import {addTask_TC, editTaskTitle_TC, removeTask_TC, TasksStateType} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
+import {SuperHeader} from "./Components/SuperHeader/SuperHeader";
+import {SuperLoader} from "./Components/SuperLoader/SuperLoader";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -22,9 +24,9 @@ function App() {
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists)
 
-    useEffect( () => {
+    useEffect(() => {
         dispatch(setTodoListsThunk)
-    }, [dispatch] )
+    }, [dispatch])
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
         dispatch(removeTask_TC(todolistId, id))
@@ -55,35 +57,40 @@ function App() {
     }, [dispatch])
 
     return (
+        <div>
+            <SuperHeader />
+            <SuperLoader />
+            <div className="App">
+                <div>
+                    <AddItemForm addText={addTodolist}/>
+                </div>
+                <div className='tdlWrapper'>
+                    {
+                        todoLists.map(tl => {
+                            let allTodolistTasks = tasks[tl.id];
+                            let tasksForTodolist = allTodolistTasks;
 
-        <div className="App">
+                            if (tl.filter === "active") tasksForTodolist = allTodolistTasks.filter(t => !t.status);
+                            if (tl.filter === "completed") tasksForTodolist = allTodolistTasks.filter(t => t.status);
 
-            <AddItemForm addText={addTodolist} />
+                            return <Todolist
+                                key={tl.id}
+                                todoListID={tl.id}
+                                title={tl.title}
+                                tasks={tasksForTodolist}
+                                removeTask={removeTask}
+                                changeFilter={changeFilter}
+                                addTask={addTask}
+                                filter={tl.filter}
+                                removeTodolist={removeTodolist}
+                                updateTask={updateTask}
+                                updateTodolist={updateTodolist}
+                            />
+                        })
+                    }
 
-            {
-                todoLists.map(tl => {
-                    let allTodolistTasks = tasks[tl.id];
-                    let tasksForTodolist = allTodolistTasks;
-
-                    if (tl.filter === "active") tasksForTodolist = allTodolistTasks.filter(t => !t.status);
-                    if (tl.filter === "completed") tasksForTodolist = allTodolistTasks.filter(t => t.status);
-
-                    return <Todolist
-                        key={tl.id}
-                        todoListID={tl.id}
-                        title={tl.title}
-                        tasks={tasksForTodolist}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        filter={tl.filter}
-                        removeTodolist={removeTodolist}
-                        updateTask={updateTask}
-                        updateTodolist={updateTodolist}
-                    />
-                })
-            }
-
+                </div>
+            </div>
         </div>
     );
 }

@@ -15,3 +15,16 @@
 .errorMessage {
     color: red;
 }
+
+.addBtnStyles {
+    cursor: pointer;
+    outline: none;
+    color: snow;
+    background-color: transparent;
+    border: 2px solid snow;
+}
+.addBtnStyles:hover {
+    color: #0b39e2;
+    background-color: #c4c5cb;
+    border: 2px solid transparent;
+}

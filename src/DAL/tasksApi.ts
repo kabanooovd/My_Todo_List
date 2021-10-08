@@ -26,9 +26,6 @@ export const TasksApi = {
     updateTask(todolistId: string, taskId: string, TaskPayload: TaskPayload_T) {
         return instance.put<CommonResponse_T<{item: SingleTask_T}>>(`${todolistId}/tasks/${taskId}`, TaskPayload)
     },
-    // switchTaskStatus(todolistId: string, taskId: string, status: number, title: string) {
-    //     return instance.put<CommonResponse_T<{item: SingleTask_T}>>(`${todolistId}/tasks/${taskId}`, {status, title})
-    // }
 }
 
 export type TaskPayload_T = {
