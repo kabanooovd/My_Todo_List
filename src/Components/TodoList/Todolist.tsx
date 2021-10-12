@@ -24,8 +24,18 @@ type PropsType = {
 }
 
 export const Todolist = React.memo(function ({
-todoListID, title, tasks, removeTask, changeFilter, addTask, removeTodolist, filter, updateTask, updateTodolist, entityStatus,
-}: PropsType) {
+                                                 todoListID,
+                                                 title,
+                                                 tasks,
+                                                 removeTask,
+                                                 changeFilter,
+                                                 addTask,
+                                                 removeTodolist,
+                                                 filter,
+                                                 updateTask,
+                                                 updateTodolist,
+                                                 entityStatus,
+                                             }: PropsType) {
 
     const dispatch = useDispatch()
 
@@ -35,9 +45,9 @@ todoListID, title, tasks, removeTask, changeFilter, addTask, removeTodolist, fil
     const onActiveClickHandler = useCallback(() => changeFilter("active", todoListID), [changeFilter, todoListID])
     const onCompletedClickHandler = useCallback(() => changeFilter("completed", todoListID), [changeFilter, todoListID])
 
-    useEffect( () => {
+    useEffect(() => {
         dispatch(setTasksTC(todoListID))
-    }, [dispatch] )
+    }, [dispatch])
 
     const addTaskTextHandler = useCallback((text: string) => {
         addTask(text, todoListID)
@@ -54,7 +64,7 @@ todoListID, title, tasks, removeTask, changeFilter, addTask, removeTodolist, fil
                     disabled={entityStatus === 'loading'}
                     className={Styles.rmIconStyle}
             >
-                <DeleteOutlined />
+                <DeleteOutlined/>
             </button>
         </h2>
 

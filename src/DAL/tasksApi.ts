@@ -4,7 +4,7 @@ import {CommonResponse_T} from "./tdlApi";
 const settings = {
     withCredentials: true,
     headers: {
-        'API-KEY': '7121752a-cd45-46e5-a73c-32630b1d9cc6'
+        'API-KEY': '5c9db236-bce8-43d4-9dbe-11cf80cb43d0'
     }
 }
 

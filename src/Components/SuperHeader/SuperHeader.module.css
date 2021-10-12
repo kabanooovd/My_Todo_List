@@ -1,8 +1,8 @@
 .headerWrapper {
     width: 100%;
-    height: 150px;
+    min-height: 150px;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     background-color: #3e3c3c;
 }
@@ -14,4 +14,42 @@
 
 .additionalTextStyles {
     color: #ff5900;
+}
+
+.buttonWrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btnLogout {
+    width: 100px;
+    height: 30px;
+    background-color: #0b39e2;
+    border: 1px solid #0b39e2;
+    color: snow;
+    margin-right: 20px;
+}
+
+@media screen and (max-width: 677px) {
+    .headerTitle {
+        margin: 0;
+    }
+    .headerWrapper {
+        justify-content: center;
+    }
+    h1 {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 370px) {
+    .headerTitle {
+        margin: 0;
+    }
+    .headerWrapper {
+        justify-content: center;
+    }
+    h1 {
+        font-size: 14px;
+    }
 }
